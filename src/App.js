@@ -1,24 +1,35 @@
-import logo from './logo.svg';
+import { lazy, Suspense } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import { Toaster } from 'react-hot-toast';
+import { ApiProvider } from './context/AuthContext';
+const Home = lazy(() => import("./pages/Home"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const Category = lazy(() => import("./pages/Category"));
+const Header = lazy(() => import("./components/Header"));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApiProvider>
+      <div className="App">
+        <Toaster
+          position="bottom-right"
+          reverseOrder={false}
+        />
+        <Header />
+        <div className='main'>
+          <Suspense fallback={<div style={{ textAlign: "center", fontWeight: "bold" }}>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/category" element={<Category />} />
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/register" element={<Register />} />
+            </Routes>
+          </Suspense>
+        </div>
+      </div>
+    </ApiProvider>
   );
 }
 
